@@ -18,10 +18,10 @@
 		"php": "^7.3"
 	},
 	"autoload": {
-        "psr-4": {
-            "Syscodes\\Database\\": ""
-        }
-    },
+		"psr-4": {
+			"Syscodes\\Database\\": ""
+		}
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
