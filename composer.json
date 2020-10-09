@@ -16,6 +16,7 @@
 	],
 	"require": {
 		"php": "^7.3",
+		"syscodes/collections" : "^0.7.2",
 		"syscodes/core" : "^0.7.2",
 		"syscodes/support" : "^0.7.2"
 	},
