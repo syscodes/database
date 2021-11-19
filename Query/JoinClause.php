@@ -20,7 +20,7 @@
  * @license     https://opensource.org/licenses/BSD-3-Clause New BSD license or see https://lenevor.com/license or see /license.md
  */
  
-namespace Syscodes\Database\Query;
+namespace Syscodes\Components\Database\Query;
 
 /**
  * Allows get the clause for add a join of atrributes in query sql.
@@ -75,10 +75,10 @@ class JoinClause
      * Add an "on" clause to the join.
      * 
      * @param  string  $first
-     * @param  string|null  $operator  (null by default)
-     * @param  string|null  $second  (null by default)
-     * @param  string  $boolean  ('and' by default)
-     * @param  array  $where  (false by default)
+     * @param  string|null  $operator  
+     * @param  string|null  $second  
+     * @param  string  $boolean  
+     * @param  array  $where  
      * 
      * @return $this
      */
@@ -97,10 +97,10 @@ class JoinClause
      * Add an "or on" clause to the join.
      * 
      * @param  string  $first
-     * @param  string|null  $operator  (null by default)
-     * @param  string|null  $second  (null by default)
+     * @param  string|null  $operator  
+     * @param  string|null  $second  
      * 
-     * @return \Syscodes\Database\Query\JoinClause
+     * @return \Syscodes\Components\Database\Query\JoinClause
      */
     public function orOn($first, $operator = null, $second = null)
     {
@@ -111,11 +111,11 @@ class JoinClause
      * Add an "on where" clause to the join.
      * 
      * @param  string  $first
-     * @param  string|null  $operator  (null by default)
-     * @param  string|null  $second  (null by default)
-     * @param  string  $boolean  ('and' by default)
+     * @param  string|null  $operator  
+     * @param  string|null  $second  
+     * @param  string  $boolean  
      * 
-     * @return \Syscodes\Database\Query\JoinClause
+     * @return \Syscodes\Components\Database\Query\JoinClause
      */
     public function where($first, $operator = null, $second = null, $boolean = 'and')
     {
@@ -126,10 +126,10 @@ class JoinClause
      * Add an "or on where" clause to the join.
      * 
      * @param  string  $first
-     * @param  string|null  $operator  (null by default)
-     * @param  string|null  $second  (null by default)
+     * @param  string|null  $operator  
+     * @param  string|null  $second  
      * 
-     * @return \Syscodes\Database\Query\JoinClause
+     * @return \Syscodes\Components\Database\Query\JoinClause
      */
     public function orWhere($first, $operator = null, $second = null)
     {
@@ -140,9 +140,9 @@ class JoinClause
      * Add an "on where is null" clause to the join
      * 
      * @param  string  $column
-     * @param  string|null  $operator  (null by default)
+     * @param  string|null  $operator  
      * 
-     * @return \Syscodes\Database\Query\JoinClause
+     * @return \Syscodes\Components\Database\Query\JoinClause
      */
     public function whereNull($column, $boolean = 'and')
     {
