@@ -20,35 +20,15 @@
  * @license     https://opensource.org/licenses/BSD-3-Clause New BSD license or see https://lenevor.com/license or see /license.md
  */
 
-namespace Syscodes\Components\Database\Connections;
-
-use Syscodes\Components\Database\Query\Grammars\PostgresGrammar as QueryGrammar;
-use Syscodes\Components\Database\Query\Processors\PostgresProcessor as QueryProcessor;
+namespace Syscodes\Components\Database\Schema\Grammars;
 
 /**
- * Postgres connection.
+ * Allows the compilation of sql sentences for the
+ * PostgreSQL database.
  * 
  * @author Alexander Campo <jalexcam@gmail.com>
  */
-class PostgresConnection extends Connection
+class PostgresGrammar extends Grammar
 {
-    /**
-     * Get the default query grammar instance.
-     * 
-     * @return Syscodes\Components\Database\QueryMysqlGrammar\
-     */
-    public function getDefaultQueryGrammar()
-    {
-        return $this->withTablePrefix(new QueryGrammar);
-    }
 
-    /**
-     * Get the default post processor instance.
-     * 
-     * @return Syscodes\Components\Database\Query\Post Processor
-     */
-    public function getDefaultPostProcessor()
-    {
-        return new QueryProcessor;
-    }
 }

@@ -20,35 +20,15 @@
  * @license     https://opensource.org/licenses/BSD-3-Clause New BSD license or see https://lenevor.com/license or see /license.md
  */
 
-namespace Syscodes\Components\Database\Connections;
-
-use Syscodes\Components\Database\Query\Grammars\PostgresGrammar as QueryGrammar;
-use Syscodes\Components\Database\Query\Processors\PostgresProcessor as QueryProcessor;
+namespace Syscodes\Components\Database\Schema\Builders;
 
 /**
- * Postgres connection.
+ * Allows you to manipulate of databases, tables and columns
+ * for the SqlServer database.
  * 
  * @author Alexander Campo <jalexcam@gmail.com>
  */
-class PostgresConnection extends Connection
+class SqlServerBuilder extends Builder
 {
-    /**
-     * Get the default query grammar instance.
-     * 
-     * @return Syscodes\Components\Database\QueryMysqlGrammar\
-     */
-    public function getDefaultQueryGrammar()
-    {
-        return $this->withTablePrefix(new QueryGrammar);
-    }
 
-    /**
-     * Get the default post processor instance.
-     * 
-     * @return Syscodes\Components\Database\Query\Post Processor
-     */
-    public function getDefaultPostProcessor()
-    {
-        return new QueryProcessor;
-    }
 }
