@@ -1,7 +1,7 @@
 <?php 
 
 /**
- * Lenevor PHP Framework
+ * Lenevor Framework
  *
  * LICENSE
  *
@@ -19,23 +19,13 @@
  * @copyright   Copyright (c) 2019 - 2026 Alexander Campo <jalexcam@gmail.com>
  * @license     https://opensource.org/licenses/BSD-3-Clause New BSD license or see https://lenevor.com/license or see /license.md
  */
- 
-namespace Syscodes\Components\Database\Query\Processors;
+
+namespace Syscodes\Components\Database\Migrations;
 
 /**
- * Allows show the results of a column listing query for Mysql Database.
+ * 
  */
-class MySqlProcessor extends Processor
+class Migrator
 {
-    /**
-     * Process the results of a column listing query.
-     * 
-     * @param  array  $results
-     * 
-     * @return array
-     */
-    public function processColumnListing($results): array
-    {
-        return array_map(fn ($result) => ((object) $result)->column_name, $results);
-    }
+
 }
