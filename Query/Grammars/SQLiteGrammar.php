@@ -34,12 +34,12 @@ class SQLiteGrammar extends Grammar
     /**
      * Compile the lock into SQL.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  bool|string  $value
      * 
      * @return string
      */
-    public function compileLock(Builder $query, $value): string
+    public function compileLock(Builder $builder, $value): string
     {
         return '';
     }
@@ -59,12 +59,12 @@ class SQLiteGrammar extends Grammar
     /**
      * Compile a basic where clause.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereBasic(Builder $query, $where): string
+    protected function whereBasic(Builder $builder, $where): string
     {
         if ($where['operator'] === '<=>') {
             $column = $this->wrap($where['column']);
@@ -73,102 +73,102 @@ class SQLiteGrammar extends Grammar
             return "{$column} IS {$value}";
         }
 
-        return parent::whereBasic($query, $where);
+        return parent::whereBasic($builder, $where);
     }
 
     /**
      * Compile a "where like" clause.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereLike(Builder $query, $where): string
+    protected function whereLike(Builder $builder, $where): string
     {
         if ($where['caseSensitive'] == false) {
-            return parent::whereLike($query, $where);
+            return parent::whereLike($builder, $where);
         }
         $where['operator'] = $where['not'] ? 'not glob' : 'glob';
 
-        return $this->whereBasic($query, $where);
+        return $this->whereBasic($builder, $where);
     }
 
     /**
      * Compile a "where date" clause.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereDate(Builder $query, $where): string
+    protected function whereDate(Builder $builder, $where): string
     {
-        return $this->dateBasedWhere('%Y-%m-%d', $query, $where);
+        return $this->dateBasedWhere('%Y-%m-%d', $builder, $where);
     }
 
     /**
      * Compile a "where time" clause.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereTime(Builder $query, $where): string
+    protected function whereTime(Builder $builder, $where): string
     {
-        return $this->dateBasedWhere('%H:%M:%S', $query, $where);
+        return $this->dateBasedWhere('%H:%M:%S', $builder, $where);
     }
 
     /**
      * Compile a "where day" clause.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereDay(Builder $query, $where): string
+    protected function whereDay(Builder $builder, $where): string
     {
-        return $this->dateBasedWhere('%d', $query, $where);
+        return $this->dateBasedWhere('%d', $builder, $where);
     }
 
     /**
      * Compile a "where month" clause.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereMonth(Builder $query, $where): string
+    protected function whereMonth(Builder $builder, $where): string
     {
-        return $this->dateBasedWhere('%m', $query, $where);
+        return $this->dateBasedWhere('%m', $builder, $where);
     }
 
     /**
      * Compile a "where year" clause.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereYear(Builder $query, $where): string
+    protected function whereYear(Builder $builder, $where): string
     {
-        return $this->dateBasedWhere('%Y', $query, $where);
+        return $this->dateBasedWhere('%Y', $builder, $where);
     }
 
     /**
      * Compile a date based where clause.
      * 
      * @param  string  $type
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function dateBasedWhere($type, Builder $query, $where): string
+    protected function dateBasedWhere($type, Builder $builder, $where): string
     {
         $value = $this->parameter($where['value']);
 
@@ -235,46 +235,46 @@ class SQLiteGrammar extends Grammar
     /**
      * Compile an insert ignore statement into SQL.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $values
      * 
      * @return string
      */
-    public function compileInsertOrIgnore(Builder $query, array $values): string
+    public function compileInsertOrIgnore(Builder $builder, array $values): string
     {
-        return Str::replaceFirst('insert', 'insert or ignore', $this->compileInsert($query, $values));
+        return Str::replaceFirst('insert', 'insert or ignore', $this->compileInsert($builder, $values));
     }
 
     /**
      * Compile an insert ignore statement using a subquery into SQL.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $columns
      * @param  string  $sql
      * 
      * @return string
      */
-    public function compileInsertOrIgnoreUsing(Builder $query, array $columns, string $sql): string
+    public function compileInsertOrIgnoreUsing(Builder $builder, array $columns, string $sql): string
     {
-        return Str::replaceFirst('insert', 'insert or ignore', $this->compileInsertUsing($query, $columns, $sql));
+        return Str::replaceFirst('insert', 'insert or ignore', $this->compileInsertUsing($builder, $columns, $sql));
     }
 
     /**
      * Compile a truncate table statement into SQL.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return array
      */
-    public function truncate(Builder $query): array
+    public function truncate(Builder $builder): array
     {
-        [$schema, $table] = $query->getConnection()->getSchemaBuilder()->parseSchemaAndTable($query->from);
+        [$schema, $table] = $builder->getConnection()->getSchemaBuilder()->parseSchemaAndTable($builder->from);
 
         $schema = $schema ? $this->wrapValue($schema).'.' : '';
 
         return [
-            'delete from '.$schema.'sqlite_sequence where name = ?' => [$query->getConnection()->getTablePrefix().$table],
-            'delete from '.$this->wrapTable($query->from) => [],
+            'delete from '.$schema.'sqlite_sequence where name = ?' => [$builder->getConnection()->getTablePrefix().$table],
+            'delete from '.$this->wrapTable($builder->from) => [],
         ];
     }
 

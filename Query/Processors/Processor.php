@@ -32,12 +32,12 @@ class Processor
     /**
      * Process the results of a "select" query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $results
      * 
      * @return array
      */
-    public function processSelect(Builder $query, $results)
+    public function processSelect(Builder $builder, $results)
     {
         return $results;
     }
@@ -45,18 +45,18 @@ class Processor
     /**
      * Process an  "insert get ID" query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  string  $sql
      * @param  array  $values
      * @param  string  $sequence  
      * 
      * @return int
      */
-    public function processInsertGetId(Builder $query, $sql, $values, $sequence = null): int
+    public function processInsertGetId(Builder $builder, $sql, $values, $sequence = null): int
     {
-        $query->getConnection()->insert($sql, $values);
+        $builder->getConnection()->insert($sql, $values);
 
-        $id = $query->getConnection()->getPdo()->lastInsertId($sequence);
+        $id = $builder->getConnection()->getPdo()->lastInsertId($sequence);
 
         return is_numeric($id) ? (int) $id : $id;
     }

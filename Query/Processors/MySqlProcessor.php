@@ -44,18 +44,18 @@ class MySqlProcessor extends Processor
     /**
      * Process an  "insert get ID" query.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  string  $sql
      * @param  array  $values
      * @param  string|null  $sequence
      * 
      * @return int
      */
-    public function processInsertGetId(Builder $query, $sql, $values, $sequence = null): int
+    public function processInsertGetId(Builder $builder, $sql, $values, $sequence = null): int
     {
-        $query->getConnection()->insert($sql, $values, $sequence);
+        $builder->getConnection()->insert($sql, $values, $sequence);
 
-        $id = $query->getConnection()->getLastInsertId();
+        $id = $builder->getConnection()->getLastInsertId();
 
         return is_numeric($id) ? (int) $id : $id;
     }

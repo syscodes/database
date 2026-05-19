@@ -24,7 +24,6 @@ namespace Syscodes\Components\Database\Erostrine\Concerns;
 
 use LogicException;
 use Syscodes\Components\Database\Erostrine\Relations\Relation;
-use Syscodes\Components\Support\Arr;
 use Syscodes\Components\Support\Str;
 
 /**
@@ -143,6 +142,7 @@ trait HasAttributes
         
         return method_exists($this, $method);
     }
+
     
     /**
      * Get a plain attribute (not a relationship).
@@ -255,19 +255,6 @@ trait HasAttributes
 
         return $this;
     }
-
-    /**
-     * Get the model's original attribute values.
-     *
-     * @param  string|null  $key
-     * @param  mixed  $default
-     * 
-     * @return mixed|array
-     */
-    public function getOriginal($key = null, $default = null)
-    {
-        return Arr::get($this->original, $key, $default);
-    }
     
     /**
      * Get an attribute array of all arrayable relations.
@@ -354,7 +341,7 @@ trait HasAttributes
      */
     protected function originalIsNumericallyEquivalent($key): bool
     {
-        $current = $this->attributes[$key];
+        $current  = $this->attributes[$key];
         $original = $this->original[$key];
         
         return is_numeric($current) && is_numeric($original) && strcmp((string) $current, (string) $original) === 0;

@@ -119,7 +119,7 @@ class Builder
     public function createDatabase($name): bool
     {
         return $this->connection->statement(
-           $this->grammar->compileCreateDatabase($name)
+           $this->grammar->compileCreateDatabase($name, $this->connection)
         );
     }
     

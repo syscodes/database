@@ -345,11 +345,11 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Perform a model update operation.
 	 * 
-	 * @param  \Syscodes\Components\Database\Erostrine\Builder $query
+	 * @param  \Syscodes\Components\Database\Erostrine\Builder $builder
 	 * 
 	 * @return bool
 	 */
-	public function performUpdate(Builder $query): bool
+	public function performUpdate(Builder $builder): bool
 	{
 		if ($this->fireModelEvent('updating') === false) {
 			return false;
@@ -362,7 +362,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 		$dirty = $this->getDirty();
 		
 		if (count($dirty) > 0) {
-			$this->setKeysForSaveQuery($query)->update($dirty);
+			$this->setKeysForSaveQuery($builder)->update($dirty);
 			
 			$this->fireModelEvent('updated', false);
 		}
@@ -397,11 +397,11 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Perform a model insert operation.
 	 * 
-	 * @param  \Syscodes\Components\Database\Erostrine\Builder  $query
+	 * @param  \Syscodes\Components\Database\Erostrine\Builder  $builder
 	 * 
 	 * @return bool
 	 */
-	public function performInsert(Builder $query): bool
+	public function performInsert(Builder $builder): bool
 	{
 		if ($this->fireModelEvent('creating') === false) {
 			return false;
@@ -414,13 +414,13 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 		$attributes = $this->getAttributes();
 
 		if ($this->getIncrementing()) {
-			$this->insertAndSetId($query, $attributes);
+			$this->insertAndSetId($builder, $attributes);
 		} else {
 			if (empty($attributes)) {
 				return true;
 			}
 			
-			$query->insert($attributes);
+			$builder->insert($attributes);
 		}
 
 		$this->exists = true;
@@ -433,14 +433,14 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Insert the given attributes and set the ID on the model.
 	 * 
-	 * @param  \Syscodes\Components\Database\Erostrine\Builder  $query
+	 * @param  \Syscodes\Components\Database\Erostrine\Builder  $builder
 	 * @param  array  $attributes
 	 * 
 	 * @return void
 	 */
-	protected function insertAndSetId(Builder $query, $attributes)
+	protected function insertAndSetId(Builder $builder, $attributes)
 	{
-		$id = $query->insertGetId($attributes, $keyName = $this->getKeyName());
+		$id = $builder->insertGetId($attributes, $keyName = $this->getKeyName());
 		
 		$this->setAttribute($keyName, $id);
 	}
@@ -504,7 +504,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Deleting the models for the given IDs.
 	 * 
-	 * @param  \Syscodes\Components\Support\Collection|array|int|string  $ids
+	 * @param  \Syscodes\Component\Collections\Collection|array|int|string  $ids
 	 * 
 	 * @return int
 	 */
@@ -571,20 +571,20 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	public function newQuery()
 	{
 		return $this->newQueryBuilder($this->newBaseQueryBuilder())
-		    ->setModel($this)
-		    ->with($this->with);
+		            ->setModel($this)
+		            ->with($this->with);
 	}
 
 	/**
 	 * Create a new Erostrine query builder for the model.
 	 * 
-	 * @param  \Syscodes\Components\Database\Query\Builder  $query
+	 * @param  \Syscodes\Components\Database\Query\Builder  $builder
 	 * 
 	 * @return \Syscodes\Components\Database\Erostrine\Builder
 	 */
-	public function newQueryBuilder(QueryBuilder $query)
+	public function newQueryBuilder(QueryBuilder $builder)
 	{
-		return new Builder($query);
+		return new Builder($builder);
 	}
 	
 	/**
@@ -596,7 +596,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	{
 		$connection = $this->getConnection();
 
-		$grammar = $connection->getQueryGrammar();
+		$grammar   = $connection->getQueryGrammar();
 		$processor = $connection->getPostProcessor();
 
 		return new QueryBuilder(
@@ -706,9 +706,8 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	 */
 	public function newPivot(self $parent, array $attributes, $table, $exists, $using = null)
 	{
-		return $using 
-		    ? $using::fromRawAttributes($parent, $attributes, $table, $exists)
-	        : Pivot::fromAttributes($parent, $attributes, $table, $exists);
+		return $using ? $using::fromRawAttributes($parent, $attributes, $table, $exists)
+		              : Pivot::fromAttributes($parent, $attributes, $table, $exists);
     }
 
 	/**
@@ -855,9 +854,9 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	public function is($model): bool
 	{
 		return ! is_null($model) &&
-		    $this->getKey() === $model->getKey() &&
-		    $this->getTable() === $model->getTable() &&
-		    $this->getConnectionName() === $model->getConnectionName();
+		       $this->getKey() === $model->getKey() &&
+		       $this->getTable() === $model->getTable() &&
+		       $this->getConnectionName() === $model->getConnectionName();
 	}
 
 	/**
@@ -921,7 +920,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Get the connectiion resolver instance.
 	 * 
-	 * @return \Syscodes\Components\Database\ConnectionResolverInterface
+	 * @return \Syscodes\Components\Database\ConnectionResolverInstance
 	 */
 	public static function getConnectionResolver()
 	{
@@ -931,7 +930,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	/**
 	 * Set the connection resolver instance.
 	 * 
-	 * @param  \Syscodes\Components\Database\ConnectionResolverInterface  $resolver
+	 * @param  \Syscodes\Components\Database\ConnectionResolverInstance  $resolver
 	 * 
 	 * @return void
 	 */
@@ -989,7 +988,7 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
      * 
      * @param  bool  $escape
      * 
-     * @return static
+     * @return stati
      */
     public function escapeWhenLoadingToString($escape = true): static
     {
@@ -1043,9 +1042,9 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
 	public function offsetExists(mixed $offset): bool
 	{ 
 		return isset($this->attributes[$offset]) || 
-		    isset($this->relations[$offset]) ||
-		    $this->hasGetMutator($offset) && 
-		    ! is_null($this->getAttributeValue($offset));
+		       isset($this->relations[$offset]) ||
+		       $this->hasGetMutator($offset) && 
+		       ! is_null($this->getAttributeValue($offset));
 	}
 
 	/**
@@ -1095,8 +1094,8 @@ class Model implements Arrayable, ArrayAccess, CanBeEscapedWhenLoadToString, Jso
     public function __toString(): string
     {
         return $this->escapeWhenLoadingToString
-		    ? e($this->toJson())
-		    : $this->toJson();
+                    ? e($this->toJson())
+                    : $this->toJson();
     }    
 
 	/**

@@ -35,16 +35,16 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile a select query into sql.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return string
      */
-    public function compileSelect(Builder $query): string
+    public function compileSelect(Builder $builder): string
     {
-        $components = $this->compileComponents($query);
+        $components = $this->compileComponents($builder);
 
-        if ($query->offset > 0) {
-            return $this->compileAnsiOffset($query, $components);
+        if ($builder->offset > 0) {
+            return $this->compileAnsiOffset($builder, $components);
         }
 
         return $this->concatenate($components);
@@ -53,12 +53,12 @@ class SqlServerGrammar extends Grammar
     /**
      * Create a full ANSI offset clause for the query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $components
      * 
      * @return string
      */
-    protected function compileAnsiOffset(Builder $query, $components): string
+    protected function compileAnsiOffset(Builder $builder, $components): string
     {
         if ( ! isset($components['orders'])) {
             $components['orders'] = 'order by (select 0)';
@@ -70,7 +70,7 @@ class SqlServerGrammar extends Grammar
 
         $sql = $this->concatenate($components);
         
-        return $this->compileTableExpression($sql, $query);
+        return $this->compileTableExpression($sql, $builder);
     }
 
     /**
@@ -89,13 +89,13 @@ class SqlServerGrammar extends Grammar
      * Compile a common table expression for a query.
      * 
      * @param  string  $sql
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return string
      */
-    protected function compileTableExpression($sql, $query): string
+    protected function compileTableExpression($sql, $builder): string
     {
-        $constraint = $this->compileRowConstraint($query);
+        $constraint = $this->compileRowConstraint($builder);
 
         return "select * from users as temp_table where row_num {$constraint} order by row_num";
     }
@@ -103,16 +103,16 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the limit / offset row constraint for a query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return string
      */
-    protected function compileRowConstraint(Builder $query): string
+    protected function compileRowConstraint(Builder $builder): string
     {
-        $start = $query->offset + 1;
+        $start = $builder->offset + 1;
 
-        if ($query->limit > 0) {
-            $finish = $query->offset + $query->limit;
+        if ($builder->limit > 0) {
+            $finish = $builder->offset + $builder->limit;
 
             return "between {$start} and {$finish}";
         }
@@ -123,18 +123,18 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile a delete statement without joins into SQL.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  string  $table
      * @param  string  $where
      * 
      * @return string
      */
-    protected function compileDeleteWithoutJoins(Builder $query, $table, $where): string
+    protected function compileDeleteWithoutJoins(Builder $builder, $table, $where): string
     {
-        $sql = parent::compileDeleteWithoutJoins($query, $table, $where);
+        $sql = parent::compileDeleteWithoutJoins($builder, $table, $where);
 
-        return ! is_null($query->limit) && $query->limit > 0 && $query->offset <= 0
-            ? Str::replaceFirst('delete', 'delete top ('.$query->limit.')', $sql)
+        return ! is_null($builder->limit) && $builder->limit > 0 && $builder->offset <= 0
+            ? Str::replaceFirst('delete', 'delete top ('.$builder->limit.')', $sql)
             : $sql;
     }
 
@@ -153,16 +153,16 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the "limit" portions of the query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  int  $limit
      * 
      * @return string
      */
-    protected function compileLimit(Builder $query, $limit): string
+    protected function compileLimit(Builder $builder, $limit): string
     {
         $limit = (int) $limit;
 
-        if ($limit && $query->offset > 0) {
+        if ($limit && $builder->offset > 0) {
             return "fetch next {$limit} rows only";
         }
 
@@ -172,12 +172,12 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the "offset" portions of the query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  int  $offset
      * 
      * @return string
      */
-    protected function compileOffset(Builder $query, $offset): string
+    protected function compileOffset(Builder $builder, $offset): string
     {
         $offset = (int) $offset;
 
@@ -191,12 +191,12 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the lock into SQL.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  bool|string  $value
      * 
      * @return string
      */
-    public function compileLock(Builder $query, $value): string
+    public function compileLock(Builder $builder, $value): string
     {
         return '';
     }
@@ -216,13 +216,13 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile an exists statement into SQL.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return string
      */
-    public function compileExists(Builder $query): string
+    public function compileExists(Builder $builder): string
     {
-        $existsQuery = clone $query;
+        $existsQuery = clone $builder;
 
         $existsQuery->columns = [];
 
@@ -232,29 +232,29 @@ class SqlServerGrammar extends Grammar
      /**
      * Compile a truncate table statement into SQL.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * 
      * @return array
      */
-    public function truncate(Builder $query): array
+    public function truncate(Builder $builder): array
     {
-        return ['truncate table '.$this->wrapTable($query->from) => []];
+        return ['truncate table '.$this->wrapTable($builder->from) => []];
     }
 
     /**
      * Compile an update statement with joins into SQL.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  string  $table
      * @param  string  $columns
      * @param  string  $where
      * @return string
      */
-    protected function compileUpdateWithJoins(Builder $query, $table, $columns, $where): string
+    protected function compileUpdateWithJoins(Builder $builder, $table, $columns, $where): string
     {
         $alias = last(explode(' as ', $table));
 
-        $joins = $this->compileJoins($query, $query->joins);
+        $joins = $this->compileJoins($builder, $builder->joins);
 
         return "update {$alias} set {$columns} from {$table} {$joins} {$where}";
     }
@@ -328,23 +328,23 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the "select *" portion of the query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $columns
      * 
      * @return string
      */
-    protected function compileColumns(Builder $query, $columns)
+    protected function compileColumns(Builder $builder, $columns)
     {
-        if ( ! is_null($query->aggregate)) {
+        if ( ! is_null($builder->aggregate)) {
             return;
         }
 
-        $select = $query->distinct ? 'select distinct ' : 'select ';
+        $select = $builder->distinct ? 'select distinct ' : 'select ';
 
         // If there is a limit on the query, but not an offset, we will add the top
         // clause to the query, which serves as a "limit" type clause.
-        if ($query->limit > 0 && $query->offset <= 0) {
-            $select .= 'top '.$query->limit.' ';
+        if ($builder->limit > 0 && $builder->offset <= 0) {
+            $select .= 'top '.$builder->limit.' ';
         }
 
         return $select.$this->columnize($columns);
@@ -353,33 +353,33 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile the "from" portion of the query.
      * 
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  string  $table
      * 
      * @return string
      */
-    protected function compileFrom(Builder $query, $table)
+    protected function compileFrom(Builder $builder, $table)
     {
-        $from = parent::compileFrom($query, $table);
+        $from = parent::compileFrom($builder, $table);
 
-        if (is_string($query->lock)) {
-            return $from.' '.$query->lock;
+        if (is_string($builder->lock)) {
+            return $from.' '.$builder;
         }
 
-        if ( ! is_null($query->lock)) {
-            return $from.' with(rowlock,'.($query->lock ? 'uplock,' : '').'holdlock)';
+        if ( ! is_null($builder->lock)) {
+            return $from.' with(rowlock,'.($builder->lock ? 'uplock,' : '').'holdlock)';
         }
     }
 
     /**
      * Compile a "where date" clause.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereDate(Builder $query, $where): string
+    protected function whereDate(Builder $builder, $where): string
     {
         $value = $this->parameter($where['value']);
 
@@ -389,12 +389,12 @@ class SqlServerGrammar extends Grammar
     /**
      * Compile a "where time" clause.
      *
-     * @param  \Syscodes\Components\Database\Query\Builder  $query
+     * @param  \Syscodes\Components\Database\Query\Builder  $builder
      * @param  array  $where
      * 
      * @return string
      */
-    protected function whereTime(Builder $query, $where): string
+    protected function whereTime(Builder $builder, $where): string
     {
         $value = $this->parameter($where['value']);
 

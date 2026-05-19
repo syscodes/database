@@ -83,7 +83,7 @@ interface ConnectionResolverInterface
      * Register an extension connection resolver.
      * 
      * @param  string  $name
-     * @param  callable  $resolver
+     * @param  \Callable  $resolver
      * 
      * @return void
      */

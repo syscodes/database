@@ -88,7 +88,7 @@ class SQLiteConnection extends Connection
     /**
      * Get the default query grammar instance.
      * 
-     * @return \Syscodes\Components\Database\Query\Grammars\SQLiteGrammar
+     * @return Syscodes\Components\Database\Query\SQLiteGrammar
      */
     public function getDefaultQueryGrammar()
     {
@@ -98,7 +98,7 @@ class SQLiteConnection extends Connection
     /**
      * Get the default post processor instance.
      * 
-     * @return \Syscodes\Components\Database\Query\Processors\SQLiteProcessor
+     * @return Syscodes\Components\Database\Query\SQLiteProcessor
      */
     public function getDefaultPostProcessor()
     {

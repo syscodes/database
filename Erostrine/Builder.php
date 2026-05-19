@@ -160,7 +160,7 @@ class Builder implements BuilderContract
     /**
      * Add a basic where clause to the query.
      * 
-     * @param  \Closure|string|array|\Syscodes\Components\Database\Query\Expression  $column
+     * @param  \Closure|string|array|\Syscodes\Component\Database\Query\Expression  $column
      * @param  mixed  $operator
      * @param  mixed  $value
      * @param  string  $boolean
@@ -249,10 +249,10 @@ class Builder implements BuilderContract
      * @param  mixed  $id
      * @param  array|string  $columns
      * 
-     * @return \Syscodes\Components\Database\Erostrine\Model
+     * @return \Sysocdes\Components\Database\Erostrine\Model
      *
-     * @throws \Syscodes\Components\Database\Erostrine\Exceptions\ModelNotFoundException
-     * @throws \Syscodes\Components\Database\Exceptions\MultipleRecordsFoundException
+     * @throws \Sysocdes\Components\Database\Erostrine\Exceptions\ModelNotFoundException
+     * @throws \Sysocdes\Components\Database\Exceptions\MultipleRecordsFoundException
      */
     public function findSole($id, $columns = ['*'])
     {
@@ -508,7 +508,7 @@ class Builder implements BuilderContract
     /**
      * Get a single column's value from the first result of a query if it's the sole matching record.
      *
-     * @param  string|\Syscodes\Components\Contracts\Database\Query\Expression  $column
+     * @param  string|\Sysocdes\Components\Contracts\Database\Query\Expression  $column
      * 
      * @return mixed
      *
@@ -529,7 +529,7 @@ class Builder implements BuilderContract
      * 
      * @return mixed
      *
-     * @throws \Syscodes\Components\Database\Erostrine\Exceptions\ModelNotFoundException
+     * @throws \Syscodes\Components\Database\Erostrine\ModelNotFoundException
      */
     public function valueOrFail($column)
     {
