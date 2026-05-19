@@ -46,13 +46,11 @@ class HigherOrderBuilderProxy
      * 
      * @param  \Syscodes\Components\Database\Erostrine\Builder  $builder 
      * @param  string  $method
-     * 
-     * @return void
      */
     public function __construct(Builder $builder, $method)
     {
         $this->builder = $builder;
-        $this->method = $method;
+        $this->method  = $method;
     }
 
     /**
